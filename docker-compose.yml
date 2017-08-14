@@ -1,0 +1,8 @@
+version: "3"
+services:
+  ignite:
+    image: apacheignite/ignite
+    environment:
+      - OPTION_LIBS=ignite-rest-http
+    ports:
+      - "8080:8080"
