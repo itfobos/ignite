@@ -1,21 +1,25 @@
-*.class
+# general
 *.log
+*.class
 
-# sbt specific
+# SBT
+dist
+project/boot
+target
+
+# Play
+logs
+bin/
+/db
+/lib/
+/modules
+/project/project
+tmp/
+test-result
+server.pid
+*.eml
+dist/
 .cache
-.history
-.lib/
-dist/*
-target/
-lib_managed/
-src_managed/
-project/boot/
-project/plugins/project/
-
-# Scala-IDE specific
-.scala_dependencies
-.worksheet
 
 .idea/
-log/
 .g8/
