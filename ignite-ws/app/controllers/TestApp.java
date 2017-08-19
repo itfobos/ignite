@@ -6,7 +6,7 @@ import org.apache.ignite.Ignition;
 
 public class TestApp {
     public static void main(String[] args) {
-        try (Ignite ignite = Ignition.start("example-ignite.xml")) {
+        try (Ignite ignite = Ignition.start("example-default.xml")) {
             // Put values in cache.
             IgniteCache<Integer, String> cache = ignite.getOrCreateCache("myCache");
             cache.put(1, "Hello");
