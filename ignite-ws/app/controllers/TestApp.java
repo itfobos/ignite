@@ -11,25 +11,26 @@ import java.util.Date;
 
 public class TestApp {
     public static void main(String[] args) {
+        Ignition.setClientMode(true);
+
         try (Ignite ignite = Ignition.start("example-default.xml")) {
 
             CacheConfiguration<String, User> userCacheConfig = new CacheConfiguration<String, User>("userCache")
-                    .setCacheMode(CacheMode.REPLICATED)
+                    .setCacheMode(CacheMode.PARTITIONED)
                     .setIndexedTypes(String.class, User.class);
 
             IgniteCache<String, User> cache = ignite.getOrCreateCache(userCacheConfig);
-            
+
             User user = new User("John", "john@russinpost.ru", new Date(), "+79231112233");
             cache.put(user.ctn, user);
 
             user = new User("Alice", "alice@russinpost.ru", new Date(), "+79234445588");
             cache.put(user.ctn, user);
 
-            //TODO:
-            ignite.compute().broadcast(() -> {
-                System.out.println(cache.get("+79231112233"));
-                System.out.println(cache.get("+79234445588"));
-            });
+            System.out.println("From cache");
+            System.out.println(cache.get("+79231112233"));
+            System.out.println(cache.get("+79234445588"));
+
         }
     }
 }
