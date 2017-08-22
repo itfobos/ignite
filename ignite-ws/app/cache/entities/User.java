@@ -1,24 +1,28 @@
-package entities;
+package cache.entities;
 
-import java.util.Date;
+import org.apache.ignite.cache.query.annotations.QuerySqlField;
 
-public class User {
+import java.io.Serializable;
+import java.util.Calendar;
+
+public class User implements Serializable {
     public final String name;
     public final String email;
-
-    public final Date activationDate; //TODO: Use calendar for timezone
 
     /**
      * Phone number
      */
+    @QuerySqlField(index = true)
     public final String ctn;
 
+    public Calendar activationDate;
+
+    @QuerySqlField(index = true)
     public String cellId;
 
-    public User(String name, String email, Date activationDate, String ctn) {
+    public User(String name, String email, String ctn) {
         this.name = name;
         this.email = email;
-        this.activationDate = activationDate;
         this.ctn = ctn;
     }
 
