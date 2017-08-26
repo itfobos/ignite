@@ -28,9 +28,21 @@
         http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/util
         http://www.springframework.org/schema/util/spring-util.xsd">
-    <bean abstract="true" id="ignite.cfg" class="org.apache.ignite.configuration.IgniteConfiguration">
+    <bean id="ignite.cfg" class="org.apache.ignite.configuration.IgniteConfiguration">
         <!-- Set to true to enable distributed class loading for examples, default is false. -->
         <property name="peerClassLoadingEnabled" value="true"/>
+
+        <property name="cacheConfiguration">
+            <bean class="org.apache.ignite.configuration.CacheConfiguration">
+                <property name="name" value="userCache"/>
+                <property name="indexedTypes">
+                    <list>
+                        <value>java.lang.String</value>
+                        <value>cache.entities.User</value>
+                    </list>
+                </property>
+            </bean>
+        </property>
 
         <!-- Enable task execution events for examples. -->
         <property name="includeEventTypes">
@@ -73,6 +85,4 @@
             </bean>
         </property>
     </bean>
-
-    <bean parent="ignite.cfg"/>
 </beans>

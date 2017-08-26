@@ -11,3 +11,4 @@ libraryDependencies += guice
 
 libraryDependencies += "org.apache.ignite" % "ignite-core" % "2.1.0"
 libraryDependencies += "org.apache.ignite" % "ignite-spring" % "2.1.0"
+libraryDependencies += "org.apache.ignite" % "ignite-spring-data" % "2.1.0"

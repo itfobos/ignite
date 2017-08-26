@@ -3,10 +3,12 @@ package cache.entities;
 import org.apache.ignite.cache.query.annotations.QuerySqlField;
 
 import java.io.Serializable;
-import java.util.Calendar;
 
 public class User implements Serializable {
+    @QuerySqlField
     public final String name;
+
+    @QuerySqlField
     public final String email;
 
     /**
@@ -15,7 +17,12 @@ public class User implements Serializable {
     @QuerySqlField(index = true)
     public final String ctn;
 
-    public Calendar activationDate;
+    @QuerySqlField(index = true)
+    public final String id;
+
+    //TODO: Turn on
+//    @QuerySqlField
+//    public Calendar activationDate;
 
     @QuerySqlField(index = true)
     public String cellId;
@@ -24,6 +31,7 @@ public class User implements Serializable {
         this.name = name;
         this.email = email;
         this.ctn = ctn;
+        this.id = ctn;
     }
 
     @Override
