@@ -8,4 +8,8 @@ services:
       - CONFIG_URI=https://raw.githubusercontent.com/itfobos/ignite/master/ignite-ws/conf/example-default.xml
       - IGNITE_QUIET=false
 
+    volumes:
+      #(HOST_PATH:CONTAINER_PATH).
+       - ./logs/ignite:/opt/ignite/apache-ignite-fabric-2.1.0-bin/work/log/
+
     network_mode: host
