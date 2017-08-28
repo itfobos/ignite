@@ -1,51 +1,48 @@
 package cache;
 
 import cache.entities.User;
-import cache.entities.UserRepository;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.apache.ignite.Ignite;
+import org.apache.ignite.IgniteCache;
+import org.apache.ignite.Ignition;
+import org.apache.ignite.cache.CacheMode;
+import org.apache.ignite.configuration.CacheConfiguration;
 import play.inject.ApplicationLifecycle;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.util.TreeMap;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 @Singleton
 public class CacheService {
 
-    private AnnotationConfigApplicationContext applicationContext;
-    private UserRepository userRepo;
+    private final IgniteCache<String, User> cache;
+    private final Ignite ignite;
 
     @Inject
     private CacheService(ApplicationLifecycle lifecycle) {
-        applicationContext = igniteSpringDataInit();
-        // Getting a reference to PersonRepository.
-        userRepo = applicationContext.getBean(UserRepository.class);
+        Ignition.setClientMode(true);
+
+        ignite = Ignition.start("example-default.xml");
+
+        CacheConfiguration<String, User> userCacheConfig = new CacheConfiguration<String, User>("userCache")
+                .setCacheMode(CacheMode.PARTITIONED)
+                .setIndexedTypes(String.class, User.class);
+
+        cache = ignite.getOrCreateCache(userCacheConfig);
 
         lifecycle.addStopHook(() -> {
-            applicationContext.destroy();
+            ignite.close();
             return CompletableFuture.completedFuture(null);
         });
     }
 
-    private static AnnotationConfigApplicationContext igniteSpringDataInit() {
-        AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
-
-        // Explicitly registering Spring configuration.
-        ctx.register(SpringCacheConfig.class);
-
-        ctx.refresh();
-
-        return ctx;
-    }
-
-    public Iterable<User> getAllUsers() {
-        return this.userRepo.findAll();
-    }
-
-    public void addUser(TreeMap<String, User> map) {
+    public List<User> getUsersByCellId() {
         //TODO:
-        userRepo.save(map);
+        return null;
+    }
+
+    public void addUser(User user) {
     }
 
 }

@@ -13,6 +13,6 @@ public class SpringCacheConfig {
     public Ignite igniteInstance() {
         Ignition.setClientMode(true);
 
-        return Ignition.start("example-default.xml");
+        return Ignition.start("ignite-config.xml");
     }
 }

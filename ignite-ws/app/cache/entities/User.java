@@ -4,6 +4,7 @@ import org.apache.ignite.cache.query.annotations.QuerySqlField;
 
 import java.io.Serializable;
 
+//TODO:Remove an annotations
 public class User implements Serializable {
     @QuerySqlField
     public final String name;
@@ -17,9 +18,6 @@ public class User implements Serializable {
     @QuerySqlField(index = true)
     public final String ctn;
 
-    @QuerySqlField(index = true)
-    public final String id;
-
     //TODO: Turn on
 //    @QuerySqlField
 //    public Calendar activationDate;
@@ -31,7 +29,6 @@ public class User implements Serializable {
         this.name = name;
         this.email = email;
         this.ctn = ctn;
-        this.id = ctn;
     }
 
     @Override
