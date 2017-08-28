@@ -7,8 +7,8 @@ import play.mvc.Controller;
 import play.mvc.Result;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ApiController extends Controller {
     private final CacheService cacheService;
@@ -19,23 +19,17 @@ public class ApiController extends Controller {
     }
 
     public Result getCellUsers(String cellId) {
-//        SqlQuery<String, User> sql = new SqlQuery<>(User.class, "cellId = ?");
-//        sql.setArgs(cellId);
-//
-//        List<User> cellUsers;
-//        try (QueryCursor<Entry<String, User>> queryCursor = cache.query(sql)) {
-//            cellUsers = queryCursor.getAll().stream().map(Entry::getValue).collect(Collectors.toList());
-//        }
-        List<User> cellUsers = new ArrayList<>();
-        cacheService.getUsersByCellId().forEach(cellUsers::add);
+        List<User> cellUsers = cacheService.getUsersByCellId(cellId);
 
         Object response = new Object() {
             int total = cellUsers.size();
-            List<User> results = cellUsers;
+
+            List<UserDTO> results = cellUsers.stream().map(UserDTO::new).collect(Collectors.toList());
         };
 
-        return ok(Json.toJson(response));
+        return ok(/*Json.toJson(response)*/ "OK");
     }
+
 
     public Result populateTestData() {
         User user = new User("John", "john@russinpost.ru", "+79231112233");

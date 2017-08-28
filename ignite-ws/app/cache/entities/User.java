@@ -1,28 +1,26 @@
 package cache.entities;
 
-import org.apache.ignite.cache.query.annotations.QuerySqlField;
+import play.data.validation.Constraints;
 
 import java.io.Serializable;
 
-//TODO:Remove an annotations
 public class User implements Serializable {
-    @QuerySqlField
+    @Constraints.MinLength(value = 2, message = "User name should be loner then 2 chars")
     public final String name;
 
-    @QuerySqlField
+    @Constraints.Email
     public final String email;
 
     /**
      * Phone number
      */
-    @QuerySqlField(index = true)
+    @Constraints.MinLength(value = 11, message = "User phone number should be loner then 11 chars")
     public final String ctn;
 
     //TODO: Turn on
 //    @QuerySqlField
 //    public Calendar activationDate;
 
-    @QuerySqlField(index = true)
     public String cellId;
 
     public User(String name, String email, String ctn) {

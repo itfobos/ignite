@@ -54,6 +54,7 @@ public class TestApp {
      *
      * @return Cache type metadata.
      */
+    @SuppressWarnings("Duplicates")
     private static QueryEntity createUserQueryEntity() {
         QueryEntity userEntity = new QueryEntity();
 
