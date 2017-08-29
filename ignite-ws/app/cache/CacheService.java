@@ -11,7 +11,6 @@ import org.apache.ignite.cache.QueryIndex;
 import org.apache.ignite.cache.query.QueryCursor;
 import org.apache.ignite.cache.query.SqlQuery;
 import org.apache.ignite.configuration.CacheConfiguration;
-import play.Logger;
 import play.inject.ApplicationLifecycle;
 
 import javax.cache.Cache;
@@ -22,6 +21,8 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Singleton
 public class CacheService {
@@ -54,20 +55,21 @@ public class CacheService {
         SqlQuery<String, BinaryObject> query = new SqlQuery<>(User.class, "cellId = ?");
         QueryCursor<Cache.Entry<String, BinaryObject>> users = binaryCache.query(query.setArgs(cellId));
 
+        return StreamSupport.stream(users.spliterator(), false)
+                .map(Cache.Entry::getValue)
+                .map(CacheService::makeUserFromBinaryObject)
+                .collect(Collectors.toList());
+    }
 
-        List<Cache.Entry<String, BinaryObject>> usersAll = users.getAll();
-        Logger.debug("Size: " + usersAll.size());
+    private static User makeUserFromBinaryObject(BinaryObject binaryObject) {
+        User result = new User(
+                binaryObject.field("name"),
+                binaryObject.field("email"),
+                binaryObject.field("ctn"));
 
-        for (Cache.Entry<String, BinaryObject> e : usersAll) {
-            Logger.debug(">>>     " + e.getKey() + "     " + e.getValue());
-        }
+        result.cellId = binaryObject.field("cellId");
 
-        return Collections.emptyList();
-//
-//        return StreamSupport.stream(users.spliterator(), false)
-//                .map(Cache.Entry::getValue)
-//                .map(BinaryObject::<User>deserialize)
-//                .collect(Collectors.toList());
+        return result;
     }
 
     public void addUser(User user) {
@@ -96,10 +98,7 @@ public class CacheService {
 
         userEntity.setFields(fields);
 
-        userEntity.setIndexes(Arrays.asList(
-                //TODO: Check the requirements
-                new QueryIndex("ctn"), new QueryIndex("cellId")
-        ));
+        userEntity.setIndexes(Arrays.asList(new QueryIndex("ctn"), new QueryIndex("cellId")));
 
         return userEntity;
     }

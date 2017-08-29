@@ -2,6 +2,7 @@ package controllers;
 
 import cache.CacheService;
 import cache.entities.User;
+import play.Logger;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class ApiController extends Controller {
+
     private final CacheService cacheService;
 
     @Inject
@@ -21,13 +23,9 @@ public class ApiController extends Controller {
     public Result getCellUsers(String cellId) {
         List<User> cellUsers = cacheService.getUsersByCellId(cellId);
 
-        Object response = new Object() {
-            int total = cellUsers.size();
+        List<UserDTO> results = cellUsers.stream().map(UserDTO::new).collect(Collectors.toList());
 
-            List<UserDTO> results = cellUsers.stream().map(UserDTO::new).collect(Collectors.toList());
-        };
-
-        return ok(/*Json.toJson(response)*/ "OK");
+        return ok(Json.toJson(new ResultDTO(results)));
     }
 
 

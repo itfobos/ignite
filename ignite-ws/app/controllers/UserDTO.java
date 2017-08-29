@@ -2,13 +2,11 @@ package controllers;
 
 import cache.entities.User;
 
+@SuppressWarnings("WeakerAccess")
 class UserDTO {
-    public final String name;
-
-    public final String email;
-
     public final String ctn;
-
+    public final String name;
+    public final String email;
     public final String activationDate;
 
     public UserDTO(User user) {
