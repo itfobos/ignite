@@ -3,6 +3,7 @@ package cache.entities;
 import play.data.validation.Constraints;
 
 import java.io.Serializable;
+import java.util.Date;
 
 public class User implements Serializable {
     @Constraints.MinLength(value = 2, message = "User name should be loner then 2 chars")
@@ -14,12 +15,11 @@ public class User implements Serializable {
     /**
      * Phone number
      */
-    @Constraints.MinLength(value = 11, message = "User phone number should be loner then 11 chars")
+    @Constraints.MinLength(value = 11, message = "User phone number should be equal or loner then 11 chars")
+    @Constraints.MaxLength(value = 12, message = "User phone number shouldn't be loner then 12 chars")
     public final String ctn;
 
-    //TODO: Turn on
-//    @QuerySqlField
-//    public Calendar activationDate;
+    public Date activationDate;
 
     public String cellId;
 

@@ -16,10 +16,7 @@ import play.inject.ApplicationLifecycle;
 import javax.cache.Cache;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -68,6 +65,7 @@ public class CacheService {
                 binaryObject.field("ctn"));
 
         result.cellId = binaryObject.field("cellId");
+        result.activationDate = binaryObject.field("activationDate");
 
         return result;
     }
@@ -95,6 +93,7 @@ public class CacheService {
         fields.put("email", String.class.getName());
         fields.put("ctn", String.class.getName());
         fields.put("cellId", String.class.getName());
+        fields.put("activationDate", Date.class.getName());
 
         userEntity.setFields(fields);
 
