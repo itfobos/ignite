@@ -86,16 +86,20 @@ public class CacheService {
         User result = new User(
                 binaryObject.field(User.NAME),
                 binaryObject.field(User.EMAIL),
-                binaryObject.field(User.CTN));
+                binaryObject.field(User.CTN),
+                binaryObject.field(User.ACTIVATION_DATE));
 
         result.cellId = binaryObject.field(User.CELL_ID);
-        result.activationDate = binaryObject.field(User.ACTIVATION_DATE);
 
         return result;
     }
 
     public void addUser(User user) {
         cache.put(user.ctn, user);
+    }
+
+    public boolean isUserExist(String ctn) {
+        return cache.containsKey(ctn);
     }
 
 
