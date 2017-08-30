@@ -36,4 +36,10 @@ public class User implements Serializable {
                 ", ctn='" + ctn + '\'' +
                 '}';
     }
+
+    public static final String NAME = "name";
+    public static final String EMAIL = "email";
+    public static final String CTN = "ctn";
+    public static final String ACTIVATION_DATE = "activationDate";
+    public static final String CELL_ID = "cellId";
 }

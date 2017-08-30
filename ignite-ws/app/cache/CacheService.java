@@ -8,7 +8,9 @@ import org.apache.ignite.binary.BinaryObject;
 import org.apache.ignite.cache.CacheMode;
 import org.apache.ignite.cache.QueryEntity;
 import org.apache.ignite.cache.QueryIndex;
+import org.apache.ignite.cache.query.FieldsQueryCursor;
 import org.apache.ignite.cache.query.QueryCursor;
+import org.apache.ignite.cache.query.SqlFieldsQuery;
 import org.apache.ignite.cache.query.SqlQuery;
 import org.apache.ignite.configuration.CacheConfiguration;
 import play.inject.ApplicationLifecycle;
@@ -48,8 +50,30 @@ public class CacheService {
         });
     }
 
+    /**
+     * @return <i>true</i> if user found and updated. <i>false</i> - user found but not updated
+     * @throws Exception if user, with CTN, not found.
+     */
+    public boolean addUserToCell(String ctn, String cellId) throws Exception {
+        BinaryObject userBinary = binaryCache.get(ctn);
+        if (userBinary == null) {
+            throw new Exception("User with CTN '" + ctn + "' not found");
+        }
+
+        Object currentCelIdValue = userBinary.field(User.CELL_ID);
+
+        String sql = "UPDATE User set " + User.CELL_ID + " = ? " +
+                "WHERE " + User.CTN + " = ? AND " + User.CELL_ID + " = ?";
+
+
+        FieldsQueryCursor<List<?>> queryCursor = binaryCache.query(new SqlFieldsQuery(sql).setArgs(cellId, ctn, currentCelIdValue));
+        Long updatedObjectsAmount = (Long) queryCursor.getAll().get(0).get(0);
+
+        return updatedObjectsAmount > 0;
+    }
+
     public List<User> getUsersByCellId(String cellId) {
-        SqlQuery<String, BinaryObject> query = new SqlQuery<>(User.class, "cellId = ?");
+        SqlQuery<String, BinaryObject> query = new SqlQuery<>(User.class, User.CELL_ID + " = ?");
         QueryCursor<Cache.Entry<String, BinaryObject>> users = binaryCache.query(query.setArgs(cellId));
 
         return StreamSupport.stream(users.spliterator(), false)
@@ -60,12 +84,12 @@ public class CacheService {
 
     private static User makeUserFromBinaryObject(BinaryObject binaryObject) {
         User result = new User(
-                binaryObject.field("name"),
-                binaryObject.field("email"),
-                binaryObject.field("ctn"));
+                binaryObject.field(User.NAME),
+                binaryObject.field(User.EMAIL),
+                binaryObject.field(User.CTN));
 
-        result.cellId = binaryObject.field("cellId");
-        result.activationDate = binaryObject.field("activationDate");
+        result.cellId = binaryObject.field(User.CELL_ID);
+        result.activationDate = binaryObject.field(User.ACTIVATION_DATE);
 
         return result;
     }
@@ -89,15 +113,15 @@ public class CacheService {
 
         LinkedHashMap<String, String> fields = new LinkedHashMap<>();
 
-        fields.put("name", String.class.getName());
-        fields.put("email", String.class.getName());
-        fields.put("ctn", String.class.getName());
-        fields.put("cellId", String.class.getName());
-        fields.put("activationDate", Date.class.getName());
+        fields.put(User.NAME, String.class.getName());
+        fields.put(User.EMAIL, String.class.getName());
+        fields.put(User.CTN, String.class.getName());
+        fields.put(User.CELL_ID, String.class.getName());
+        fields.put(User.ACTIVATION_DATE, Date.class.getName());
 
         userEntity.setFields(fields);
 
-        userEntity.setIndexes(Arrays.asList(new QueryIndex("ctn"), new QueryIndex("cellId")));
+        userEntity.setIndexes(Arrays.asList(new QueryIndex(User.CTN), new QueryIndex(User.CELL_ID)));
 
         return userEntity;
     }

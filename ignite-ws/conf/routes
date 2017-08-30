@@ -4,4 +4,6 @@
 
 GET         /cellUsers/:cellId        controllers.ApiController.getCellUsers(cellId:String)
 
+POST        /addUserToCell            controllers.ApiController.addUserToCell
+
 POST        /populateTestData         controllers.ApiController.populateTestData

@@ -2,7 +2,11 @@ package controllers;
 
 import cache.CacheService;
 import cache.entities.User;
+import com.fasterxml.jackson.databind.JsonNode;
+import play.Logger;
+import play.data.FormFactory;
 import play.libs.Json;
+import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
 
@@ -14,10 +18,12 @@ import java.util.stream.Collectors;
 public class ApiController extends Controller {
 
     private final CacheService cacheService;
+    private final FormFactory formFactory;
 
     @Inject
-    public ApiController(CacheService cacheService) {
+    public ApiController(CacheService cacheService, FormFactory formFactory) {
         this.cacheService = cacheService;
+        this.formFactory = formFactory;
     }
 
     public Result getCellUsers(String cellId) {
@@ -30,6 +36,24 @@ public class ApiController extends Controller {
         };
 
         return ok(Json.toJson(response));
+    }
+
+    @BodyParser.Of(BodyParser.Json.class)
+    public Result addUserToCell() {
+        JsonNode requestJson = request().body().asJson();
+
+        Result result;
+        try {
+            boolean operationResult = cacheService.addUserToCell(requestJson.get("ctn").asText(), requestJson.get("cellId").asText());
+            Logger.debug("operationResult: {}", operationResult);
+
+            result = ok(operationResult ? "Updated" : "Concurrent modification");
+        } catch (Exception e) {
+            Logger.debug(e.getMessage());
+            result = notFound(e.getMessage());
+        }
+
+        return result;
     }
 
 
