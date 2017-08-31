@@ -4,7 +4,6 @@ services:
     image: apacheignite/ignite
     container_name: apache_ignite
     environment:
-      - OPTION_LIBS=ignite-rest-http
       - CONFIG_URI=https://raw.githubusercontent.com/itfobos/ignite/master/ignite-ws/conf/ignite-config.xml
       - IGNITE_QUIET=false
 
