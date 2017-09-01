@@ -1,4 +1,3 @@
-# TODO:
 version: "3"
 services:
   ignite:
@@ -8,4 +7,10 @@ services:
       - CONFIG_URI=https://raw.githubusercontent.com/itfobos/ignite/prod_assembly/ignite-ws/conf/ignite-config.xml
       - IGNITE_QUIET=false
 
-    network_mode: host
+  ignite-ws:
+      image: turukin/ignite-ws:0.1
+      container_name: ignite-ws
+      environment:
+        - CONFIG_URI=https://raw.githubusercontent.com/itfobos/ignite/prod_assembly/ignite-ws/conf/ignite-config.xml
+      ports:
+        - "9000:9000"
