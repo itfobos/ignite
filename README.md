@@ -23,10 +23,10 @@ For POST operations _Content-Type_ header param should be defined as _applicatio
 
 ### API Methods
 
-* [/cellUsers](Page#/cellUsers) 
-* [/addUserToCell](Page#/addUserToCell) 
-* [/addUserProfile](Page#/addUserProfile) 
-* [/populateTestData](Page#/populateTestData) 
+* [/cellUsers](Page#cellusers) 
+* [/addUserToCell](Page#addusertocell) 
+* [/addUserProfile](Page#adduserprofile) 
+* [/populateTestData](Page#populatetestdata) 
 
  #### /cellUsers
  Returns all users inside the specified cell
