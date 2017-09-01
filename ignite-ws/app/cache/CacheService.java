@@ -13,11 +13,14 @@ import org.apache.ignite.cache.query.QueryCursor;
 import org.apache.ignite.cache.query.SqlFieldsQuery;
 import org.apache.ignite.cache.query.SqlQuery;
 import org.apache.ignite.configuration.CacheConfiguration;
+import play.Logger;
 import play.inject.ApplicationLifecycle;
 
 import javax.cache.Cache;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
@@ -26,16 +29,25 @@ import java.util.stream.StreamSupport;
 @Singleton
 public class CacheService {
 
+    private static final String CONFIG_URL_PROPERTY = "ignite.config.url";
+
     private final IgniteCache<String, User> cache;
     private IgniteCache<String, BinaryObject> binaryCache;
 
     private final Ignite ignite;
 
     @Inject
-    private CacheService(ApplicationLifecycle lifecycle) {
+    private CacheService(ApplicationLifecycle lifecycle) throws MalformedURLException {
         Ignition.setClientMode(true);
 
-        ignite = Ignition.start("ignite-config.xml");
+        String configUrlStr = System.getProperty(CONFIG_URL_PROPERTY);
+        if (configUrlStr != null && !configUrlStr.isEmpty()) {
+            this.ignite = Ignition.start(new URL(configUrlStr));
+            Logger.info("Used URL {} for connection to Apache ignite", configUrlStr);
+        } else {
+            ignite = Ignition.start("ignite-config.xml");
+            Logger.info("Used default configuration");
+        }
 
         CacheConfiguration<String, User> userCacheConfig = new CacheConfiguration<String, User>("userCache")
                 .setCacheMode(CacheMode.PARTITIONED)
