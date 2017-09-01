@@ -1,0 +1,21 @@
+FROM java:8
+
+# Do not rely on anything provided by base image(s), but be explicit, if they are installed already it is noop then
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        unzip \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /opt/ignite-ws-app
+
+ADD ignite-ws-1.0-SNAPSHOT.zip ./
+
+RUN unzip ignite-ws-1.0-SNAPSHOT.zip \
+    && rm ignite-ws-1.0-SNAPSHOT.zip
+
+ENV APP_HOME /opt/ignite-ws-app/ignite-ws-1.0-SNAPSHOT
+
+RUN chmod +x ${APP_HOME}/bin/ignite-ws
+
+CMD ${APP_HOME}/bin/ignite-ws -Dplay.http.secret.key='zw0yl8W[n9SX3kLcoj<p9vchCDX_ZhtBtfMpz6^Bj<j<u`LbMaq[vZIckW`nx1BL' -Dignite.config.url=$CONFIG_URI
+
+EXPOSE 9000
