@@ -4,6 +4,11 @@ Used Apache Ignite as DB + Web Service(Play Framework) to allow CRUD operations.
 
 SBT tool is used for the project building.
 
+What is the project about:
+Mobile phone users communicate with network stations. 
+
+It should be possibility to add user profile, add existing user to cell, request users in particular cell.
+
 ## How to start the project:
 
 ### Prerequisites:
