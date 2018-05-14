@@ -1,7 +1,7 @@
 version: "3"
 services:
   ignite:
-    image: apacheignite/ignite
+    image: apacheignite/ignite:2.1.0
     container_name: apache_ignite
     environment:
       - CONFIG_URI=https://raw.githubusercontent.com/itfobos/ignite/master/ignite-ws/conf/ignite-config.xml
